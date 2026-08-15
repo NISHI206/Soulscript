@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My History | SoulScript</title>
+
+  <style>
+    body {
+      background-color: #88AB8E;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: white;
+      padding: 20px;
+    }
+
+    #list {
+      width: 80%;
+      margin: auto;
+      background: #EEE7DA;
+      padding: 30px;
+      border-radius: 12px;
+    }
+
+    .entry {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>📊 Your Mental Health History</h2>
+
+  <div id="list"></div>
+
+  <script>
+    async function loadHistory() {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "http://localhost:5050/api/history/all",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+
+      const list = document.getElementById("list");
+
+      list.innerHTML = "";
+
+      data.forEach((entry) => {
+        list.innerHTML += `
+          <div class="entry">
+
+            <h3>
+              ${new Date(entry.createdAt).toDateString()}
+            </h3>
+
+            <p>
+              Mood: ${entry.mood || "Not available"}
+            </p>
+
+            <p>
+              Energy: ${entry.energy || "Not available"}
+            </p>
+
+            <p>
+              Emotional Index:
+              ${entry.score || "Not available"}
+            </p>
+
+            <p>
+              Journal:
+              ${entry.journalEntry || "Not available"}
+            </p>
+
+          </div>
+        `;
+      });
+    }
+
+    loadHistory();
+  </script>
+
+</body>
+</html>
